@@ -3,19 +3,36 @@ package czg.scene;
 import czg.MainWindow;
 import czg.game.objects.BaseObject;
 
-import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Scene extends JPanel {
+/**
+ * Eine Szene besteht aus einem Hintergrund und einer beliebigen Menge von
+ * sich darauf bewegenden Objekten.
+ */
+public class Scene {
 
+    /**
+     * Ob ein einfarbiger Hintergrund gewünscht ist. Andernfalls
+     * wird das {@link #backgroundImage} verwendet.
+     */
     private boolean useBackgroundColor = true;
+    /**
+     * Hintergrundfarbe, falls {@link #useBackgroundColor} {@code true} ist.
+     */
     private Color backgroundColor = Color.BLACK;
+    /**
+     * Hintergrundbild, falls {@link #useBackgroundColor} {@code false} ist.
+     */
     private Image backgroundImage = null;
 
+    /**
+     * Liste der Objekte in diese Szene
+     */
     public final List<BaseObject> objects = new ArrayList<>();
 
+    // TODO tolle sachen mit bit-masken
     /**
      * Ob diese Szene vollständig ausgeblendet werden soll, wenn eine
      * andere über ihr angezeigt wird, oder ob sie immer noch darunter
@@ -29,15 +46,6 @@ public class Scene extends JPanel {
      */
     public boolean isCovered = false;
 
-
-    public Scene() {
-        // Komplettes Fenster ausfüllen
-        setBounds(0,0,MainWindow.WIDTH,MainWindow.HEIGHT);
-
-        // Transparent sein
-        setOpaque(false);
-    }
-
     public void setBackgroundColor(Color c) {
         useBackgroundColor = true;
         backgroundColor = c;
@@ -49,30 +57,22 @@ public class Scene extends JPanel {
     }
 
     public void update() {
-        objects.forEach(BaseObject::update);
+        if(! isCovered)
+            objects.forEach(BaseObject::update);
     }
 
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-
-        // Nichts zeichnen, wenn die Szene verdeckt ist
-        if(isCovered)
-            return;
-
-        Graphics2D g2 = (Graphics2D) g;
-
+    public void draw(Graphics2D g) {
         // Hintergrund zeichnen:
         if(useBackgroundColor) {
             // Einfarbig
-            g2.setColor(backgroundColor);
-            g2.fillRect(0,0,MainWindow.WIDTH,MainWindow.HEIGHT);
+            g.setColor(backgroundColor);
+            g.fillRect(0,0,MainWindow.WIDTH,MainWindow.HEIGHT);
         } else {
             // Bild
-            g2.drawImage(backgroundImage, 0, 0, MainWindow.WIDTH, MainWindow.HEIGHT, null);
+            g.drawImage(backgroundImage, 0, 0, MainWindow.WIDTH, MainWindow.HEIGHT, null);
         }
 
         // Objekte zeichnen
-        objects.forEach(o -> o.draw(g2));
+        objects.forEach(o -> o.draw(g));
     }
 }

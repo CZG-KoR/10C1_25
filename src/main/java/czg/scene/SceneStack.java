@@ -1,13 +1,18 @@
 package czg.scene;
 
+import czg.MainWindow;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SceneStack {
-
-    private final JPanel contentPane;
+/**
+ * Der Szenen-Stapel enthält beliebig viele Szenen (siehe {@link Scene}), die übereinander
+ * angezeigt werden. Dabei kann, dem Stapel-Modell folgend, immer nur eine neue Szene
+ * über allen anderen hinzugefügt, sowie nur die oberste Szene entfernt werden.
+ */
+public class SceneStack extends JPanel {
 
     /**
      * Eigene Liste mit Szenen weil contentPane.getComponents()
@@ -16,11 +21,10 @@ public class SceneStack {
 
     /**
      * Einen neuen Szenen-Stapel erstellen.
-     * @param contentPane Das {@link JPanel}, welches die Szenen enthalten soll
      */
-    public SceneStack(JPanel contentPane) {
-        contentPane.removeAll();
-        this.contentPane = contentPane;
+    public SceneStack() {
+        // Gesamten Raum ausfüllen
+        setBounds(0,0, MainWindow.WIDTH,MainWindow.HEIGHT);
     }
 
     /**
@@ -28,37 +32,27 @@ public class SceneStack {
      * @param scene Beliebige Szene
      */
     public void push(Scene scene) {
-        // Zum Fenster hinzufügen
-        contentPane.add(scene);
-
         // Ggf. letzte Szene verdecken
-        Scene last = getLast();
+        Scene last = getTop();
         if(last != null && last.canBeCovered) {
             last.isCovered = true;
         }
 
-        // Ins Fenster hinzufügen
+        // In die Liste aufnehmen
         scenes.add(scene);
-
-        // Update Z-Order of scenes. Highest z-order = drawn first, lowest z-order = draw last
-        for (int i = 0; i < scenes.size(); i++) {
-            contentPane.setComponentZOrder(scenes.get(i), scenes.size()-1-i);
-        }
     }
 
     /**
      * Entfernt die oberste Szene
      */
     public void pop() {
-        Scene last = getLast();
+        Scene last = getTop();
         if(last != null) {
-            // Vom Fenster entfernen
-            contentPane.remove(last);
             // Aus der Liste entfernen
             scenes.remove(scenes.size()-1);
 
             // Aktualisieren
-            last = getLast();
+            last = getTop();
             // Nicht mehr bedecken
             if(last != null)
                 last.isCovered = false;
@@ -66,15 +60,28 @@ public class SceneStack {
             System.err.println("Es wurde versucht, eine Szene zu entfernen, obwohl keine Szenen mehr auf dem Stapel sind!");
     }
 
+    /**
+     * Logik-Code der einzelnen Szenen ausführen
+     */
     public void update() {
-        for(Component c : contentPane.getComponents()) {
-            if(c instanceof Scene) {
-                ((Scene) c).update();
-            }
-        }
+        scenes.forEach(Scene::update);
     }
 
-    private Scene getLast() {
+    @Override
+    protected void paintComponent(Graphics graphics) {
+        super.paintComponent(graphics);
+
+        Graphics2D g2 = (Graphics2D) graphics;
+
+        // Alle Szenen zeichnen
+        for(Scene scene : scenes)
+            scene.draw(g2);
+    }
+
+    /**
+     * @return Szene oben auf dem Stapel
+     */
+    private Scene getTop() {
         return scenes.isEmpty() ? null : scenes.get(scenes.size()-1);
     }
 
