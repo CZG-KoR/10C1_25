@@ -1,9 +1,9 @@
 package czg;
 
-import czg.game.Images;
-import czg.game.objects.BaseObject;
-import czg.scene.Scene;
-import czg.scene.SceneStack;
+import czg.objects.ExamplePlayerObject;
+import czg.scenes.ExampleScene1;
+import czg.scenes.SceneStack;
+import czg.util.Input;
 
 import javax.swing.*;
 import java.awt.*;
@@ -30,69 +30,62 @@ public class MainWindow extends JFrame implements Runnable {
      */
     public static final int FPS = 30;
 
-    private static MainWindow instance = null;
+    private static MainWindow INSTANCE = null;
 
     /**
-     * Die einzige Instanz des Szenen-Stapels
+     * Die Instanz des Szenen-Stapels
      */
-    public final SceneStack sceneStack;
+    public final SceneStack SCENE_STACK;
 
     /**
      * @return Die Instanz des Fensters zugreifen
      */
     public static MainWindow getInstance() {
-        return instance;
+        return INSTANCE;
     }
 
     private MainWindow() {
         super("CZGame");
 
         // Feste Größe
-        this.setSize(new Dimension(WIDTH,HEIGHT));
-        this.setResizable(false);
+        setSize(new Dimension(WIDTH,HEIGHT));
+        setResizable(false);
 
-        // Haupt-Panel erstellen
-        JPanel contentPane = new JPanel();
-        // Komponenten werden von Hand platziert
-        contentPane.setLayout(null);
-        // Gesamtes Fenster ausfüllen
-        contentPane.setSize(WIDTH, HEIGHT);
-        // An den SceneStack übergeben. Dieser platziert und entfernt
-        // die Szenen dann auf bzw. von dieser, und blendet sie ein
-        // und aus.
-        sceneStack = new SceneStack(contentPane);
-        // Haupt-Panel tatsächlich festlegen
-        this.setContentPane(contentPane);
+        // Manuelles platzieren von Elementen
+        setLayout(null);
+
+        // Szenen-Stapel hinzufügen
+        SCENE_STACK = new SceneStack();
+        setContentPane(SCENE_STACK);
+
+        // Tastatur- und Maus-Eingaben empfangen
+        addKeyListener(Input.INSTANCE);
+        addMouseListener(Input.INSTANCE);
 
         // Gesamtes Programm wird beendet, wenn das Fenster geschlossen wird
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // In die Mitte des Bildschirms platzieren
-        this.setLocationRelativeTo(null);
+        setLocationRelativeTo(null);
 
         // Zeigen
-        this.setVisible(true);
+        setVisible(true);
     }
 
     public static void main(String[] args) {
         // OpenGL-Grafikschnittstelle und damit (hoffentlich) die Grafikkarte verwenden
-        //System.setProperty("sun.java2d.opengl","true");
+        System.setProperty("sun.java2d.opengl","true");
 
         // Fenster erstellen
-        instance = new MainWindow();
+        INSTANCE = new MainWindow();
 
+        // Haupt-Schleife in einem neuen Thread starten
+        new Thread(INSTANCE).start();
 
-        // DEBUG
-        Scene myScene = new Scene();
-        myScene.setBackgroundImage(Images.get("/background.png"));
-        BaseObject cat = new BaseObject("/moppel_side_R_1.png");
-        myScene.objects.add(cat);
-
-        getInstance().sceneStack.push(myScene);
-
-
-        // Haupt-Schleife starten
-        new Thread(instance).start();
+        // BEISPIEL-SZENE (nur zur Referenz, später entfernen!)
+        ExampleScene1 s1 = new ExampleScene1();
+        s1.objects.add(ExamplePlayerObject.INSTANCE);
+        INSTANCE.SCENE_STACK.push(s1);
     }
 
     /**
@@ -100,29 +93,42 @@ public class MainWindow extends JFrame implements Runnable {
      */
     @Override
     public void run() {
-        final double drawInterval = 1e9 / FPS;
+        // In welchem Zeitintervall (in Nanosekunden) die Spiellogik ausgeführt werden soll
+        final double interval = 1e9 / FPS;
+        // Zählt, wie oft die Spiellogik durchlaufen werden sollte.
         double delta = 0;
+
+        // Zeit seit dem letzten Durchlauf der while(true)-Schleife
         long lastTime = System.nanoTime();
+        // Zweite Zeit-Variable. Wird zur neuen lastTime.
         long currentTime;
-        long timer = 0;
-        int drawCount = 0;
 
         System.out.println("Haupt-Schleife beginnt");
 
         while(true) {
-
+            // Aktuelle Zeit messen
             currentTime = System.nanoTime();
 
-            delta += (currentTime - lastTime) / drawInterval;
-            timer += (currentTime - lastTime);
+            // Die Zeit berechnen, die seit dem letzten Durchlauf dieser Schleife vergangen ist.
+            // Damit berechnen, wie oft die Spiellogik in dieser Zeitspanne hätte durchlaufen
+            // werden sollen (normalerweise eine Anzahl <1).
+            delta += (currentTime - lastTime) / interval;
+
+            // Die currentTime wird wieder zur lastTime
             lastTime = currentTime;
 
-            if(delta >= 1) {
-                getInstance().sceneStack.update();
-                repaint();
+            // Alle nötigen Durchläufe abarbeiten
+            while(delta >= 1) {
+                // Code für Szenen und Objekte ausführen
+                SCENE_STACK.update();
+                // Zuvor nur als KeyState.PRESSED eingetragene Tasten
+                // jetzt als KeyState.HELD behandeln
+                Input.INSTANCE.updatePressedToHeld();
+                // Grafik
+                SCENE_STACK.repaint();
 
+                // Durchlauf abgeschlossen, Zähler kann um 1 verringert werden
                 delta--;
-                drawCount++;
             }
 
         }

@@ -5,7 +5,9 @@ Sie sind auch in Rohform lesbar, jedoch bietet es sich an eine Markdown Preview 
 Eine solche Preview ist in GitHub integriert, also empfiehlt es sich die Markdown-Dateien auf GitHub einzusehen.
 
 Für das Bearbeiten solcher Dateien eignet es sich einen online Markdown-Editor zu verwenden.  
-[Markdown Live Preview](https://markdownlivepreview.com/) eignet sich dafür besonders, da dort auch eine Vorlage zu finden ist um die Markdown-Syntax nachzuschauen. Ebendiese folgt jedoch auch hier im Anschluss:
+[Markdown Live Preview](https://markdownlivepreview.com/) eignet sich dafür besonders. Die
+dort bereitgestellte Vorlage findet sich auch hier noch einmal. Auf GitHub lässt sich der
+Markdown-Quelltext über den `Code`-Button direkt oben-links über dem Dokument anzeigen.
 
 # Markdown syntax guide
 
@@ -46,7 +48,7 @@ _You **can** combine them_
 
 ## Images
 
-![This is an alt text.](/image/Markdown-mark.svg "This is a sample image.")
+![This is an alt text.](../../src/main/resources/assets/background/example.png "This is a sample image.")
 
 ## Links
 
