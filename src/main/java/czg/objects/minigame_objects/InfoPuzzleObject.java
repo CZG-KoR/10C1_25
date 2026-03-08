@@ -25,11 +25,7 @@ public enum InfoPuzzleObject {
     InfoPuzzleObject(String path, LogicGateObject solution, int amountOfAnswers) {
         this.sprite = Images.get(path);
         this.solution = solution;
-        this.answers = new LogicGateObject[amountOfAnswers];
-
-        for (int i = 0; i < amountOfAnswers; i++) {
-            this.answers[i] = LogicGateObject.getRandom();
-        }
+        this.answers = LogicGateObject.getRandomArray(amountOfAnswers, solution);
 
         int r = (int) (new Random().nextDouble() * amountOfAnswers);
 

@@ -58,7 +58,7 @@ public class BaseScene {
      * auf {@code false} gesetzt.
      */
     public BaseScene() {
-        this(new CoverSettings(false, false, false));
+        this(new CoverSettings(false, true, false));
     }
 
     /**

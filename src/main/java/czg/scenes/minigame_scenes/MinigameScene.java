@@ -4,7 +4,9 @@
  */
 package czg.scenes.minigame_scenes;
 
+import czg.objects.ButtonObject;
 import czg.scenes.BaseScene;
+import czg.scenes.InfogangScene;
 import czg.scenes.SceneStack;
 
 /**

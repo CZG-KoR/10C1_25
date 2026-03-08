@@ -11,7 +11,12 @@ package czg.objects;
 public class ExampleItemObject {
     
     //Implementieren aller Items als Datensätze in das CZGame in Form einer Reihung
-    
+    /*
+    /*
+    HINWEIS: Schaut euch mal Java Enums an:
+        https://www.w3schools.com/java/java_enums.asp
+        https://www.w3schools.com/java/java_enum_constructor.asp
+
     static String[][] testItemListe = {{"DNA", 1, DNA.png}
                                        {"Mikroskop", 2, Mikroskop.png}
                                        {"Nervenzelle", 3, Nerv.png}
@@ -32,4 +37,6 @@ public class ExampleItemObject {
                                        {"Tastatur", 3, Tastatur.png}
                                        {}
         }
+
+     */
 }

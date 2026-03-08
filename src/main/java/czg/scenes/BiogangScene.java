@@ -6,7 +6,6 @@ package czg.scenes;
 
 import czg.objects.BackdropObject;
 import czg.objects.ButtonObject;
-import czg.objects.ExamplePlayerObject;
 import czg.util.Images;
 
 import static czg.MainWindow.HEIGHT;

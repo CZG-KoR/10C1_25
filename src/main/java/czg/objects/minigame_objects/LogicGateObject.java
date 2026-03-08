@@ -25,4 +25,34 @@ public enum LogicGateObject {
 
         return LogicGateObject.values()[r];
     }
+
+    public static LogicGateObject[] getRandomArray(int length, LogicGateObject excludedGate) {
+        LogicGateObject[] tmp = new LogicGateObject[length];
+        LogicGateObject[] usedGates = new LogicGateObject[length];
+
+        for (int i = 0; i < length; i++) {
+            boolean valid = false;
+            LogicGateObject rGate = null;
+            while (!valid) {
+                valid = true;
+
+                rGate = getRandom();
+
+                if (rGate == excludedGate) {
+                    valid = false;
+                    continue;
+                }
+                for (int j = 0; j < length; j++) {
+                    if (usedGates[j] == rGate) {
+                        valid = false;
+                        break;
+                    }
+                }
+            }
+            tmp[i] = rGate;
+            usedGates[i] = rGate;
+        }
+
+        return tmp;
+    }
 }

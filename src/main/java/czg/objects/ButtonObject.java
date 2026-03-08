@@ -9,7 +9,7 @@ import java.awt.*;
  * welches eine gegebene Funktion ausführt, sobald der Button gedrückt wird.
  */
 public class ButtonObject extends BaseObject {
-    final Runnable method;
+    public Runnable method;
 
     /**
      * Einen neuen Button erstellen und in die Mitte des Bildschirms platzieren.

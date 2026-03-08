@@ -8,7 +8,6 @@ import static czg.MainWindow.HEIGHT;
 import static czg.MainWindow.WIDTH;
 import czg.objects.BackdropObject;
 import czg.objects.ButtonObject;
-import czg.objects.ExamplePlayerObject;
 import czg.util.Images;
 
 /**

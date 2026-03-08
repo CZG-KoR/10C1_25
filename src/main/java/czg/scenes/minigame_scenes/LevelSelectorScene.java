@@ -9,6 +9,7 @@ import czg.objects.BackdropObject;
 import czg.objects.ButtonObject;
 import czg.scenes.BaseScene;
 import czg.scenes.SceneStack;
+import czg.scenes.cover_settings.CoverSettings;
 import czg.util.Images;
 
 /**
@@ -17,12 +18,13 @@ import czg.util.Images;
  */
 public class LevelSelectorScene extends BaseScene {
     public LevelSelectorScene(BaseScene level1, BaseScene level2, BaseScene level3) {
+        super(new CoverSettings(true, true, true));
         objects.add(new BackdropObject(Images.get("/assets/minigames/general/level_selector_background.png")));
 
         ButtonObject buttonLevel1 = new ButtonObject(Images.get("/assets/minigames/general/button_level_1.png"), () -> SceneStack.INSTANCE.push(level1));
         ButtonObject buttonLevel2 = new ButtonObject(Images.get("/assets/minigames/general/button_level_2.png"), () -> SceneStack.INSTANCE.push(level2));
         ButtonObject buttonLevel3 = new ButtonObject(Images.get("/assets/minigames/general/button_level_3.png"), () -> SceneStack.INSTANCE.push(level3));
-        ButtonObject buttonExit = new ButtonObject(Images.get("/assets/minigames/general/exit_button.png"), SceneStack.INSTANCE::pop);
+        ButtonObject buttonExit = new ButtonObject(Images.get("/assets/minigames/general/button_exit.png"), SceneStack.INSTANCE::pop);
 
         buttonLevel1.x = MainWindow.WIDTH / 2 - buttonLevel1.width / 2;
         buttonLevel1.y = (int) (MainWindow.HEIGHT * 0.35);

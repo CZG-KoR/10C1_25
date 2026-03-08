@@ -261,7 +261,7 @@ public class SceneStack extends JPanel {
      * Szene ganz oben auf dem Stapel abfragen
      * @return Szene oben auf dem Stapel
      */
-    private BaseScene getTop() {
+    public BaseScene getTop() {
         return scenes.isEmpty() ? null : scenes.getLast();
     }
 
